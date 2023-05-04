@@ -1,9 +1,7 @@
 import time
 import random
 
-#Game Record: 61 days with thirst(Done by Ashton and Matt)
-
-# Setting up main variables and values
+# Main variables and values
 Health = 100
 Thirst = 100
 BodyTemp = 97.5
@@ -27,29 +25,40 @@ TV = ["My Strange Addiction", "SPongBorb", "Paw Patrol", "Law & Order", "My 500 
 Barbwire_Durabilty = 2
 M1911_Durability = 2
 
+# Setting up main functions
+def Status():
+    global Health
+    global Thirst
+    global Day
+    global Weather
+    status = f"[Health: {Health} | Thirst: {Thirst} | Day: {Day} | Weather: {Weather}]"
+    print(status)
+    breaker = []
+    for i in range(len(status)):
+        breaker.append("-")
+    print(*breaker, sep="")
+
 def Durability(Weapon):
     global Barbwire_Durabilty
     global M1911_Durability
-    
     if Weapon == "Barbwire Bat":
         Barbwire_Durabilty -= 1
         if Barbwire_Durabilty == 0:
             Inventory.remove("Barbwire Bat")
             Barbwire_Durabilty = 2
-
     if Weapon == "M1911":
         M1911_Durability -= 1
         if M1911_Durability == 0:
             Inventory.remove("M1911")
             M1911_Durability = 2
 
-# Setting up main functions
 def New_Day():
     global Day
     global Health
     global Thirst
     global Inventory
     global Weather
+    global Item
     Weather = random.choice(Weather_Types)
     Day += 1
     Thirst -= 5
@@ -57,13 +66,10 @@ def New_Day():
         Health -= 5
     if Thirst < 0:
         Thirst = 0
-        
     Event = random.choices(Events, weights=(15, 15, 15, 15, 25, 5, 10, 15, 25), k=1)
     Event = random.choice(Event)
     if Event == "Scav Camp":
-        print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-        print("------------------------------------------")
-        print("")
+        Status()
         Item = random.choices(Game_Items, weights=(10, 30, 20, 20, 30, 5, 5, 30, 30, 25), k=1)
         Item = random.choice(Item)
         print("You raided a Scav Camp. You found a " + Item + " in one of the tents.")
@@ -74,35 +80,23 @@ def New_Day():
             Durability("Barbwire Bat")
             if "Camp Stove" in Inventory:
                 Health -= 10
-                print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-                print("------------------------------------------")
-                print("")
+                Status()
                 print("You were attacked by a wild dog. You took 15 damage and killed the dog. You used your Camp Stove and gained back 5 health.")
             else:
                 Health -= 15
-                print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-                print("------------------------------------------")
-                print("")
+                Status()
                 print("You were attacked by a wild dog. You took 15 damage and killed the dog.")
         else:
             Health -= 20
-            print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-            print("------------------------------------------")
-            print("")
-            print("You were mauled by a wild dog for an hour. You took 20 damage and cry... a lot.")
-            
+            Status()
+            print("You were mauled by a wild dog for an hour. You took 20 damage and cry... a lot.")  
     if Event == "Acid Rain":
         Health -= 20
-        print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-        print("------------------------------------------")
-        print("")
-        print('It begins to rain...acid. You took 20 damage.')
-        
+        Status()
+        print('It begins to rain acid. You took 20 damage.')
     if Event == "Hit And Run":
         Health -= 30
-        print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-        print("------------------------------------------")
-        print("")
+        Status()
         print('You were hit by a car.')
         try:
             One = random.choice(Inventory)
@@ -120,57 +114,43 @@ def New_Day():
                 pass
         except:
             pass
-    
     if Event == "Nothing":
-        print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-        print("------------------------------------------")
-        print("")
+        Status()
         print('You wandered around for a day and did nothing.')
-        
     if Event == "Abandoned House":
-        print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-        print("------------------------------------------")
-        print("")
+        Status()
         Item = random.choices(Game_Items, weights=(10, 30, 20, 20, 30, 5, 5, 30, 30, 25), k=1)
         Item2 = random.choices(Game_Items, weights=(10, 30, 20, 20, 30, 5, 5, 30, 30, 25), k=1)
         Item = random.choice(Item)
         Item2 = random.choice(Item2)
         Inventory.append(Item)
         Inventory.append(Item2)
-        print('You stumble upon an abandoned home. You found ' + Item + ' and ' + Item2)
+        print(f"You stumble upon an abandoned home. You found {Item} and {Item2}")
         if "Multi-Tool" in Inventory:
             Item3 = random.choices(Game_Items, weights=(10, 30, 20, 20, 30, 5, 5, 30, 30, 25), k=1)
             Item3 = random.choice(Item3)
             Inventory.append(Item3)
             Inventory.remove("Multi-Tool")
-            print("You used your Multi-Tool and opened a lockbox. You found " + Item3)
-
+            print(f"You used your Multi-Tool and opened a lockbox. You found {Item3}")
     if Event == "Generator":
         if "Gasoline" in Inventory:
             Health += 50
             Thirst += 20
             if Health > 100:
                 Health = 100
-            print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-            print("------------------------------------------")
-            print("")
+            Status()
             print("You found a generator and some gear. You used your gasoline and stayed the night, gaining 50 health.")
             Inventory.remove("Gasoline")
         else:
-            print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-            print("------------------------------------------")
-            print("")
-            print("You found a generator and some gear. Unfortunately, you do not have any gasoline.")
-            
+            Status()
+            print("You found a generator and some gear. Unfortunately, you do not have any gasoline.") 
     if Event == "Bandit Attack":
         if "M1911" in Inventory:
             # No Damage
             Item = random.choice(Inventory)
             Inventory.remove(Item)
-            print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-            print("------------------------------------------")
-            print("")
-            print("You were atatcked by a group of bandits. You used your M1911 and brutally executed each member and lost your", Item)
+            Status()
+            print(f"You were atatcked by a group of bandits. You used your M1911 and brutally executed each member and lost your {Item}")
         else:
             Health -= 10
             try:
@@ -178,16 +158,11 @@ def New_Day():
                 Inventory.remove(Item)
             except:
                 pass
-            print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-            print("------------------------------------------")
-            print("")
-            print("You were atatcked by a group of bandits. Without your weapon you were scared and curled up unto a ball, taking 10 dmaage. You lost your", Item)
-            
+            Status()
+            print(f"You were atatcked by a group of bandits. Without your weapon you were scared and curled up unto a ball, taking 10 damage. You lost your {Item}")
     if Event == "Hallucination":
-        print("[Health:",str(Health) , "| Thirst: ",str(Thirst), "| Day:",str(Day) , " | Weather:", Weather , "]")
-        print("------------------------------------------")
-        print("")
-        print("While wandering, you hallucinated and found a TV in the sand. You sat down and watched", random.choice(TV), "for", random.randint(1,14), "hours.")
+        Status()
+        print(f"While wandering, you hallucinated and found a TV in the sand. You sat down and watched {random.choice(TV)} for {random.randint(1,14)} hours.")
 
 def Bandage():
     global Health
@@ -239,11 +214,11 @@ print("""
         You are a survivor in Death Valley after an apocolypse
         
 Important Info:
-    1. You lose thirst everyday, after 50 thirst you lose 5 health a day.
+    1. You lose thirst everyday, get below 50 thirst and you lose 5 health a day.
     2. You can only use one item per day (Bandage, Canteen, etc)
-    3. Some items are not usable, and require an event to be used
+    3. Some items are not independently usable, and require an event to be used
     4. You start with a bandage, water bottle, and a KitKat
-    5. All weapons have two uses
+    5. All weapons have two uses before they break
     6. Each day, a random event takes place
     7. The current game record is: 61 days
 
@@ -260,15 +235,17 @@ Keybinds:
 
 # Main running sequence
 while Alive == True:
-
     if Action == 1:
         New_Day()
         Action = 0
-
     if Health > 100:
         Health = 100
     if Health <= 0:
         Healh = 0
+    if Thirst > 100:
+        Thirst = 100
+    if Thirst <= 0:
+        Thirst = 0
 
 # Main Function for Day Progression
     INPUT = input()
@@ -276,32 +253,30 @@ while Alive == True:
         New_Day()
 
 # Actions the user can make anytime
-    if INPUT == "inventory" or INPUT == 'Inventory' or INPUT == "e" or INPUT == "E":
-        print("Your Items Are: ", Inventory)
-        Item = input("What item would you like to use? (Press Enter to Skip) ")
-        if Item == "":
-            pass
+    if INPUT == "e" or INPUT == "E":
+        print(f"Your items are: {Inventory}")
+        Item = input("What item would you like to use? (Press Enter to Skip): ")
         if Item == "Bandage" or Item == "bandage":
             Bandage()
-            print("Your Health is now at: "+ str(Health))
+            print(f"Your Health is now at: {Health}")
             print("")
             Action = 1
         if Item in Foods:
             Food()
-            print(Item + " consumed. Your Health is now at: "+ str(Health))
+            print(f"{Item} consumed. Your Health is now at: {Health}")
             print(" ")
             Action = 1
         if Item in Waters:
             Water()
-            print(Item + " consumed. Your Thirst is now at: "+ str(Thirst))
-            print(" ")
+            print(f"{Item} consumed. Your Thirst is now at: {Thirst} \n")
             Action = 1
+        if Item == "":
+            pass
             
-# Listeners for cheat mode
+# Listener for cheat mode
     if INPUT == "CM":
         CM = not(CM)
         print(CM)
-        
     if CM == True:
         if INPUT == "+":
             Health += 25
@@ -313,7 +288,7 @@ while Alive == True:
 # Death function
     if Health <= 0:
         Alive = False
-        print("")
+        print("\n")
         print("------------------------------------")
-        print("You Died. "+"You survived",str(Day)+" days.")
+        print(f"You Died. You survived {Day} days.")
         print("------------------------------------")
